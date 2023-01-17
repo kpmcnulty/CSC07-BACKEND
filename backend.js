@@ -62,9 +62,31 @@ app.get('/users/:id', (req, res) => {
    }
 });
 
+function addUser(user){
+   users['users_list'].push(user);
+}
+app.post('/users', (req, res) => {
+   const userToAdd = req.body;
+   addUser(userToAdd);
+   res.status(200).end();
+});
+app.delete('/users/:id', (req, res) => {
+   const id = req.params['id']; //or req.params.id
+   let result = findUserById(id);
+   if (result === undefined || result.length == 0)
+       res.status(404).send('Resource not found.');
+   else {
+      delUserById(id);
+      res.send(users);
+   }
+});
 function findUserById(id) {
    return users['users_list'].find( (user) => user['id'] === id); // or line below
    //return users['users_list'].filter( (user) => user['id'] === id);
+}
+function delUserById(id) {
+   return users['users_list'].pop( users['users_list'].find( (user) => user['id']===id));
+   
 }
 
 const findUserByName = (name) => { 
